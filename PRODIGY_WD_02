@@ -27,3 +27,142 @@
 </body>
 
 </html>
+
+CSS FILE
+@import url('https://fonts.googleapis.com/css2?family=Bree+Serif&family=Caveat:wght@400;700&family=Lobster&family=Monoton&family=Open+Sans:ital,wght@0,400;0,700;1,400;1,700&family=Playfair+Display+SC:ital,wght@0,400;0,700;1,700&family=Playfair+Display:ital,wght@0,400;0,700;1,700&family=Roboto:ital,wght@0,400;0,700;1,400;1,700&family=Source+Sans+Pro:ital,wght@0,400;0,700;1,700&family=Work+Sans:ital,wght@0,400;0,700;1,700&display=swap');
+
+*,
+*:before,
+*:after {
+    padding: 0px;
+    margin: 0px;
+    box-sizing: border-box;
+}
+
+body {
+    background-image: url("https://c4.wallpaperflare.com/wallpaper/861/409/209/time-background-watch-wallpaper-preview.jpg");
+}
+
+.container {
+    background-color: transparent;
+    width: 40%;
+    min-width: 500px;
+    padding: 30px 0;
+    padding-bottom: 50px;
+    border-width: 0px;
+    border-radius: 15px;
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.787);
+    position: absolute;
+    transform: translate(-50%, -50%);
+    top: 50%;
+    left: 50%;
+}
+
+.timer-display {
+    background-color: #234567;
+    width: 95%;
+    position: relative;
+    display: flex;
+    align-items: center;
+    font-family: Sans-Serif;
+    font-size: 30px;
+    color: white;
+    justify-content: space-around;
+    border-width: 0px;
+    border-radius: 10px;
+    box-shadow: 0 0 30px rgba(68, 8, 857, 0.377);
+    left: 4%;
+    padding: 50px;
+}
+
+#start-button {
+    width: 140px;
+    height: 50px;
+    border-width: 0px;
+    border-radius: 15px;
+    color: white;
+    background-color: turquoise;
+    padding: 10px;
+    margin-left: 10px;
+}
+
+#reset-button {
+    width: 140px;
+    height: 50px;
+    border-width: 0px;
+    border-radius: 15px;
+    color: white;
+    background-color: blue;
+    padding: 10px;
+    margin-left: 10px;
+}
+
+#pause-button {
+    width: 140px;
+    height: 50px;
+    border-width: 0px;
+    border-radius: 15px;
+    color: white;
+    background-color: pink;
+    padding: 10px;
+    margin-left: 5px;
+}
+
+.buttons {
+    width: 90%;
+    margin: 60px auto 0 auto;
+    display: flex;
+    justify-content: space-around;
+    font-family: roboto;
+    cursor: pointer;
+    outline: none;
+}
+
+JAVASCRIPT
+
+/*jslint latedef:false*/
+/* eslint-disable no-unused-vars*/
+let [milliseconds, seconds, minutes, hours] = [0, 0, 0, 0];
+let timeRef = document.querySelector(".timer-display");
+let int = null;
+
+document.getElementById("start-button").addEventListener("click", () => {
+    if (int !== null) {
+        clearInterval(int);
+    }
+    int = setInterval(displayTimer, 10);
+});
+document.getElementById("pause-button").addEventListener("click", () => {
+    clearInterval(int);
+});
+document.getElementById("reset-button").addEventListener("click", () => {
+    clearInterval(int);
+    [milliseconds, seconds, minutes, hours] = [0, 0, 0, 0];
+    timeRef.innerHTML = "00 : 00 : 00 : 000";
+});
+
+function displayTimer() {
+    milliseconds += 10;
+    if (milliseconds === 1000) {
+        milliseconds = 0;
+        seconds++;
+        if (seconds === 60) {
+            seconds = 0;
+            minutes++;
+            if (minutes === 60) {
+                minutes = 0;
+                hours++;
+            }
+        }
+    }
+    let h = hours < 10 ? "0" + hours : hours;
+    let m = hours < 10 ? "0" + minutes : minutes;
+    let s = hours < 10 ? "0" + seconds : seconds;
+    let ms =
+        milliseconds < 10 ?
+        "00" + milliseconds :
+        milliseconds < 100 ?
+        "0" + milliseconds :
+        milliseconds;
+    timeRef.innerHTML = '${h} : ${m} : ${s} : ${ms}';
+}
