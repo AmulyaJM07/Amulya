@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <title>Game</title>
+</head>
+
+<body>
+    <section>
+        <h1 class="heading">Tic-Tac-Toe</h1>
+        <div class="gameboard">
+            <div data-block-index="0" class="block"></div>
+            <div data-block-index="1" class="block"></div>
+            <div data-block-index="2" class="block"></div>
+            <div data-block-index="3" class="block"></div>
+            <div data-block-index="4" class="block"></div>
+            <div data-block-index="5" class="block"></div>
+            <div data-block-index="6" class="block"></div>
+            <div data-block-index="7" class="block"></div>
+            <div data-block-index="8" class="block"></div>
+        </div>
+        <h1 class="gamestatus"></h1>
+        <button class="button">Try again</button>
+    </section>
+    <script src="./script.js"></script>
+</body>
+
+</html>
+
+@import url('https://fonts.googleapis.com/css2?family=Bree+Serif&family=Caveat:wght@400;700&family=Lobster&family=Monoton&family=Open+Sans:ital,wght@0,400;0,700;1,400;1,700&family=Playfair+Display+SC:ital,wght@0,400;0,700;1,700&family=Playfair+Display:ital,wght@0,400;0,700;1,700&family=Roboto:ital,wght@0,400;0,700;1,400;1,700&family=Source+Sans+Pro:ital,wght@0,400;0,700;1,700&family=Work+Sans:ital,wght@0,400;0,700;1,700&display=swap');
+
+body {
+    background-image: url("https://w0.peakpx.com/wallpaper/392/745/HD-wallpaper-punchout-game-retro-old.jpg");
+    color: white;
+}
+
+section {
+    width: 400px;
+    text-align: center;
+    background-color: transparent;
+    border-radius: 25px;
+    border-color: white;
+    margin: auto;
+}
+
+.heading {
+    padding: 20px;
+    color: white;
+    font-size: 40px;
+}
+
+.gameboard {
+    width: 150px;
+    display: grid;
+    grid-template-columns: repeat(3, auto);
+    margin: 120px;
+    margin-bottom: 10px;
+    margin-top: 10px;
+}
+
+.block {
+    width: 50px;
+    height: 50px;
+    font-family: Roboto;
+    border-style: double;
+    border-width: 3px;
+    border-color: white;
+    cursor: pointer;
+    line-height: 50px;
+    font-size: 20px;
+    color: black;
+}
+
+.button {
+    cursor: pointer;
+    height: 40px;
+    border-width: 1px;
+    border-radius: 10px;
+    background-color: black;
+    color: white;
+    border-color: white;
+    font-weight: bold;
+}
+
+.button:hover {
+    transition: 0.25s;
+}
+
+/*jslint latedef:false*/
+/* eslint-disable no-unused-vars*/
+
+const statusDisplay = document.querySelector('.gamestatus');
+let gameActive = true;
+let currentPlayer = "X";
+let gameState = ["", "", "", "", "", "", "", "", ""];
+const winningMessage = () => `Player ${currentPlayer} has won!`;
+const drawMessage = () => `Game ended in a draw!`;
+const currentPlayerTurn = () => `${currentPlayer}'s turn`;
+
+statusDisplay.innerHTML = currentPlayerTurn();
+
+document.querySelectorAll('.block').forEach(block => block.addEventListener('click', handleBlockClick));
+document.querySelector('.button').addEventListener('click', handleTryAgain);
+
+function handleBlockClick(clickedBlockEvent) {
+    const clickedBlock = clickedBlockEvent.target;
+    const clickedBlockIndex = parseInt(
+        clickedBlock.getAttribute('data-block-index')
+    );
+    if (gameState[clickedBlockIndex] !== "" || !gameActive) {
+        return;
+    }
+    handleBlockPlayed(clickedBlock, clickedBlockIndex);
+    handleResultValidation();
+}
+
+function handleBlockPlayed(clickedBlock, clickedBlockIndex) {
+    gameState[clickedBlockIndex] = currentPlayer;
+    clickedBlock.innerHTML = currentPlayer;
+}
+const winningConditions = [
+    [0, 1, 2],
+    [3, 4, 5],
+    [6, 7, 8],
+    [0, 3, 6],
+    [1, 4, 7],
+    [2, 5, 8],
+    [0, 4, 8],
+    [2, 4, 6]
+];
+
+function handleResultValidation() {
+    let roundWon = false;
+    for (let i = 0; i <= 7; i++) {
+        const winCondition = winningConditions[i];
+        let a = gameState[winCondition[0]];
+        let b = gameState[winCondition[1]];
+        let c = gameState[winCondition[2]];
+        if (a === '' || b === '' || c === '') {
+            continue;
+        }
+        if (a === b && b === c) {
+            roundWon = true;
+            break;
+        }
+        if (roundWon) {
+            statusDisplay.innerHTML = winningMessage();
+            gameActive = false;
+            return;
+        }
+        let roundDraw = !gameState.includes("");
+        if (roundDraw) {
+            statusDisplay.innerHTML = drawMessage();
+            gameActive = false;
+            return;
+        }
+        handlePlayerChange();
+    }
+}
+
+function handlePlayerChange() {
+    currentPlayer = currentPlayer === "X" ? "O" : "X";
+    statusDisplay.innerHTML = currentPlayerTurn();
+}
+
+function handleTryAgain() {
+    gameActive = true;
+    currentPlayer = "X";
+    gameState = ["", "", "", "", "", "", "", "", ""];
+    statusDisplay.innerHTML = currentPlayerTurn();
+    document.querySelectorAll('.block')
+        .forEach(block => block.innerHTML = "");
+}
